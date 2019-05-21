@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "778226044658",
+    "firebase_url": "https://quickchat-9ed4a.firebaseio.com",
+    "project_id": "quickchat-9ed4a",
+    "storage_bucket": "quickchat-9ed4a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778226044658:android:fedda05f25dabf69",
+        "android_client_info": {
+          "package_name": "com.miltenil.quickchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778226044658-6m95hva3u5vjhjs8spb4uds9nbspn9gn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAU4a8iNzEN3ko1tmSZ2dgf3KXfoUgrn04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "778226044658-6m95hva3u5vjhjs8spb4uds9nbspn9gn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
