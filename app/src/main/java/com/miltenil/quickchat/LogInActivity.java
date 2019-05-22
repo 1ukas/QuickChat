@@ -20,8 +20,9 @@ public class LogInActivity extends AppCompatActivity {
 
     public enum CheckInType {LogIn, SignUp}
 
-    private static final String TAG = "LogInActivity";
     private FirebaseAuth mAuth;
+    private static final String TAG = "LogInActivity";
+    private static final int MIN_PASSWORD_LENGTH = 6;
 
     public void OpenMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -33,6 +34,12 @@ public class LogInActivity extends AppCompatActivity {
         final EditText passwordInput = findViewById(R.id.passwordField);
         final String emailString = emailInput.getText().toString();
         final String passwordString = passwordInput.getText().toString();
+
+        if (passwordString.length() < MIN_PASSWORD_LENGTH) {
+            Toast.makeText(LogInActivity.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         switch (type) {
             case LogIn:
                 mAuth.signInWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
