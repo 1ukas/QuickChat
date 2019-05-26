@@ -25,7 +25,7 @@ public class LogInActivity extends AppCompatActivity {
     private static final int MIN_PASSWORD_LENGTH = 6;
 
     public void OpenMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, FriendsListActivity.class);
         startActivity(intent);
     }
 
