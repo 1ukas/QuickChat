@@ -1,4 +1,4 @@
-package com.miltenil.quickchat;
+package com.miltenil.quickchat.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -15,14 +15,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.miltenil.quickchat.Utils.CreateUser;
+import com.miltenil.quickchat.R;
 
 public class LogInActivity extends AppCompatActivity {
 
     public enum CheckInType {LogIn, SignUp}
 
-    private FirebaseAuth mAuth;
     private static final String TAG = "LogInActivity";
     private static final int MIN_PASSWORD_LENGTH = 6;
+
+    private FirebaseAuth mAuth;
 
     public void OpenMainActivity() {
         Intent intent = new Intent(this, FriendsListActivity.class);
@@ -42,7 +45,8 @@ public class LogInActivity extends AppCompatActivity {
 
         switch (type) {
             case LogIn:
-                mAuth.signInWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                mAuth.signInWithEmailAndPassword(emailString, passwordString)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -61,14 +65,17 @@ public class LogInActivity extends AppCompatActivity {
                 break;
 
             case SignUp:
-                mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                mAuth.createUserWithEmailAndPassword(emailString, passwordString)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             //updateUI(user);
-                            OpenMainActivity();
+                            new CreateUser().AddNewUser(user.getUid(), user.getEmail());
+                            Intent intent = new Intent(LogInActivity.this, DisplayNameActivity.class);
+                            startActivity(intent);
                         }
                         else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
