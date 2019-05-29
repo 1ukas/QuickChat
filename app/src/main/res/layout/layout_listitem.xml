@@ -9,12 +9,12 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:id="@+id/friend_image"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/placeholder_profile_icon"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SAMPLE TEXT"
+        android:text="@string/sample_text"
         android:id="@+id/friend_name"
         android:layout_toEndOf="@+id/friend_image"
         android:layout_centerVertical="true"

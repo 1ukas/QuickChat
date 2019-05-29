@@ -2,6 +2,7 @@ package com.miltenil.quickchat.Activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.miltenil.quickchat.Fragments.MenuFragment;
 import com.miltenil.quickchat.R;
 import com.miltenil.quickchat.Adapters.RecyclerViewAdapter;
 
@@ -43,9 +45,16 @@ public class FriendsListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friendslist);
+        FriendsListActivity.this.setTitle("Friends");
         Log.d(TAG, "onCreate: started");
 
         mAuth = FirebaseAuth.getInstance(); // Initialise Auth System
+
+        // Menu Fragment:
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_menu_placeholder, new MenuFragment());
+        ft.commit();
+
         GetFriends();
     }
 

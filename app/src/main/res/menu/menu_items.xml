@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_friend_menu"
+        android:title="Add Friend"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/new_post_menu"
+        android:icon="@drawable/ic_videocam_white_24dp"
+        android:title="Create New Post"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/friends_list_menu"
+        android:title="Friends"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/logout_menu"
+        android:title="Logout"
+        app:showAsAction="never" />
+</menu>

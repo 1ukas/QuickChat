@@ -1,5 +1,6 @@
 package com.miltenil.quickchat.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,8 @@ public class DisplayNameActivity extends AppCompatActivity {
                         }
                     }
                 });
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override

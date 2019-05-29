@@ -28,7 +28,7 @@ public class LogInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     public void OpenMainActivity() {
-        Intent intent = new Intent(this, FriendsListActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
@@ -38,7 +38,11 @@ public class LogInActivity extends AppCompatActivity {
         final String emailString = emailInput.getText().toString();
         final String passwordString = passwordInput.getText().toString();
 
-        if (passwordString.length() < MIN_PASSWORD_LENGTH) {
+        if (emailString.isEmpty()) {
+            Toast.makeText(LogInActivity.this, "Invalid Email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (passwordString.length() < MIN_PASSWORD_LENGTH) {
             Toast.makeText(LogInActivity.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -116,5 +120,10 @@ public class LogInActivity extends AppCompatActivity {
                 CheckInUser(CheckInType.SignUp);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.moveTaskToBack(true);
     }
 }

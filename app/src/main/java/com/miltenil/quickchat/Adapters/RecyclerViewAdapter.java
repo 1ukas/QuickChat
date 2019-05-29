@@ -40,7 +40,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         Log.d(TAG, "onBindViewHolder: called.");
-        new LoadImageFromURLAsync().execute(viewHolder.friendImage, mFriendImages.get(i));
+        if (!mFriendImages.get(i).isEmpty()) { // If there is an avatar saved, use it.
+            new LoadImageFromURLAsync().execute(viewHolder.friendImage, mFriendImages.get(i));
+        }
         viewHolder.friendName.setText(mFriendNames.get(i));
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,17 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.LogInActivity">
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MainActivity"></activity>
-        <activity android:name=".Activities.FriendsListActivity"></activity>
-        <activity android:name=".Activities.DisplayNameActivity"></activity>
-        <activity android:name=".Activities.AddFriendActivity" />
+        <activity android:name=".Activities.LogInActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".Activities.FriendsListActivity" android:parentActivityName=".Activities.MainActivity"></activity>
+        <activity android:name=".Activities.DisplayNameActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".Activities.AddFriendActivity" android:parentActivityName=".Activities.MainActivity"></activity>
     </application>
 
 </manifest>

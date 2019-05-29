@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">QuickChat</string>
+    <string name="quick_chat">Quick Chat</string>
+    <string name="e_mail">E-MAIL</string>
+    <string name="password">PASSWORD</string>
+    <string name="login">LOGIN</string>
+    <string name="signup">SIGNUP</string>
+    <string name="sample_text">SAMPLE TEXT</string>
+    <string name="next">Next</string>
+    <string name="set_your_display_name">Set Your\nDisplay Name</string>
+    <string name="display_name">Display Name</string>
 </resources>
