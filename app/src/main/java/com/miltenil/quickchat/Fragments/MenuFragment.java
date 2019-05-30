@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.miltenil.quickchat.Activities.FriendsListActivity;
 import com.miltenil.quickchat.Activities.LogInActivity;
+import com.miltenil.quickchat.Activities.ProfileActivity;
 import com.miltenil.quickchat.R;
 import com.miltenil.quickchat.Utils.AddFriend;
 
@@ -72,6 +73,10 @@ public class MenuFragment extends Fragment {
             case R.id.friends_list_menu:
                 Intent intentFriends = new Intent(getActivity(), FriendsListActivity.class);
                 startActivity(intentFriends);
+                return true;
+            case R.id.profile_menu:
+                Intent intentProfile = new Intent(getActivity(), ProfileActivity.class);
+                startActivity(intentProfile);
                 return true;
             case R.id.logout_menu:
                 FirebaseAuth.getInstance().signOut(); // Log user out

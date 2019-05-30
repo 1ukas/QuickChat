@@ -1,5 +1,6 @@
 package com.miltenil.quickchat.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 public class FriendsListActivity extends AppCompatActivity {
 
     private static final String TAG = "FriendsListActivity";
+    private static final String TITLE_KEY = "Friends";
     private static final String USERS_KEY = "users";
     private static final String FRIENDS_KEY = "friends";
     private static final String DISPLAY_NAME_KEY = "displayname";
@@ -45,7 +47,7 @@ public class FriendsListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friendslist);
-        FriendsListActivity.this.setTitle("Friends");
+        FriendsListActivity.this.setTitle(TITLE_KEY);
         Log.d(TAG, "onCreate: started");
 
         mAuth = FirebaseAuth.getInstance(); // Initialise Auth System
@@ -62,7 +64,10 @@ public class FriendsListActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
+        if (currentUser == null) { // If the user is not logged in, open LogInActivity
+            Intent intent = new Intent(this, LogInActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void GetFriends() {

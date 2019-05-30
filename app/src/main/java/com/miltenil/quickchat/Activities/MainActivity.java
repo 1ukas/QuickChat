@@ -20,6 +20,8 @@ import com.miltenil.quickchat.Utils.AddFriend;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TITLE_KEY = "Inbox";
+
     private FirebaseAuth mAuth;
 
     @Override
@@ -30,14 +32,17 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LogInActivity.class);
             startActivity(intent);
         }
-        //updateUI(currentUser);
+        else if (currentUser.getDisplayName().equals("")) {
+            Intent intent = new Intent(this, DisplayNameActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MainActivity.this.setTitle("Inbox");
+        MainActivity.this.setTitle(TITLE_KEY);
         mAuth = FirebaseAuth.getInstance(); // Initialise Auth System
 
         // Menu Fragment:

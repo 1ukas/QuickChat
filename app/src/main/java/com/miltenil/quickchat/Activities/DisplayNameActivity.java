@@ -60,11 +60,11 @@ public class DisplayNameActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Display Name Updated in Firebase Auth.");
+                            Intent intent = new Intent(DisplayNameActivity.this, MainActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -93,6 +93,9 @@ public class DisplayNameActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
+        if (currentUser == null) { // If the user is not logged in, open LogInActivity
+            Intent intent = new Intent(this, LogInActivity.class);
+            startActivity(intent);
+        }
     }
 }

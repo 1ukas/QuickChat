@@ -20,10 +20,11 @@
         </activity>
         <activity android:name=".Activities.LogInActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name=".Activities.FriendsListActivity" android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.DisplayNameActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".Activities.FriendsListActivity" android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.AddFriendActivity" android:parentActivityName=".Activities.MainActivity"></activity>
+        <activity android:name=".Activities.ProfileActivity" android:parentActivityName=".Activities.MainActivity"></activity>
     </application>
 
 </manifest>
