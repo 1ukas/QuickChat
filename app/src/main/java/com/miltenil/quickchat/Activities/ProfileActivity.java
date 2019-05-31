@@ -1,7 +1,12 @@
 package com.miltenil.quickchat.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +27,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.miltenil.quickchat.Fragments.MenuFragment;
 import com.miltenil.quickchat.R;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
     private static final String TITLE_KEY = "Profile";
     private static final int MIN_PASSWORD_LENGTH = 6;
+    private static final int GET_FROM_GALLERY = 3;
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -34,8 +44,31 @@ public class ProfileActivity extends AppCompatActivity {
     EditText passwordField;
     EditText emailField;
     TextView successText;
+    ImageView profileAvatar;
 
     private String passString;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        //Detects request codes
+        if(requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                profileAvatar.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void onStart() {
@@ -125,6 +158,13 @@ public class ProfileActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.profile_password_field);
         changePassButton = findViewById(R.id.profile_change_password_btn);
         changePassButton.setOnClickListener(passwordButtonListener);
+        profileAvatar = findViewById(R.id.profile_avatar_img);
+        profileAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+            }
+        });
     }
 
     private void ChangePassword (String passwordString) {
