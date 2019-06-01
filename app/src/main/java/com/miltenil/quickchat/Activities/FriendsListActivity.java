@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.protobuf.Empty;
 import com.miltenil.quickchat.Fragments.MenuFragment;
 import com.miltenil.quickchat.R;
 import com.miltenil.quickchat.Adapters.RecyclerViewAdapter;
@@ -58,6 +59,11 @@ public class FriendsListActivity extends AppCompatActivity {
         ft.commit();
 
         GetFriends();
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(new ArrayList<String>() {}, new ArrayList<String>() {}, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(FriendsListActivity.this));
     }
 
     @Override
@@ -71,6 +77,7 @@ public class FriendsListActivity extends AppCompatActivity {
     }
 
     public void GetFriends() {
+        Log.d(TAG, "GetFriends: HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
         db = FirebaseFirestore.getInstance();
         String collectionPath = (USERS_KEY + "/" + mAuth.getUid() + "/" + FRIENDS_KEY);
         final CollectionReference friends = db.collection(collectionPath);
@@ -147,8 +154,8 @@ public class FriendsListActivity extends AppCompatActivity {
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: init recycler view.");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, this);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, FriendsListActivity.this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(FriendsListActivity.this));
     }
 }
