@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,7 +37,7 @@ public class VideoCaptureActivity extends AppCompatActivity {
     private static final String TITLE_KEY = "Capture";
     private static final int VIDEO_CAPTURE = 101;
     private static final int MAX_VIDEO_LENGTH = 15;
-    private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 100;
+    private static final int MULTIPLE_PERMISSION_REQUEST = 10;
 
     private FirebaseAuth mAuth;
 
@@ -52,22 +53,22 @@ public class VideoCaptureActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case WRITE_EXTERNAL_STORAGE_PERMISSION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case MULTIPLE_PERMISSION_REQUEST: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
                     CaptureVideo();
                 }
                 else {
-                    Toast.makeText(this, "Requires Write Storage Permission", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
                 }
-                return;
+                break;
             }
         }
     }
 
-
     private void CaptureVideo() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MULTIPLE_PERMISSION_REQUEST);
         }
         else {
             if (!HasCamera()) {
@@ -84,7 +85,7 @@ public class VideoCaptureActivity extends AppCompatActivity {
                 path.mkdirs();
             }
 
-            File videoFile = new File(path, "myvideo.mp4");
+            File videoFile = new File(path, UUID.randomUUID().toString().substring(0,5) + ".mp4");
             Uri videoUri = FileProvider.getUriForFile(this, "com.miltenil.fileprovider", videoFile);
 
             Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -100,6 +101,8 @@ public class VideoCaptureActivity extends AppCompatActivity {
         if (requestCode == VIDEO_CAPTURE) {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "Video saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Video recording cancelled.", Toast.LENGTH_LONG).show();
             } else {
@@ -125,7 +128,7 @@ public class VideoCaptureActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
         this.setTitle(TITLE_KEY);
         mAuth = FirebaseAuth.getInstance(); // Initialise Auth System
         CaptureVideo();
