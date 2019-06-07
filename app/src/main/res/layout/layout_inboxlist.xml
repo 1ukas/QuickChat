@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp"
+    android:id="@+id/parent_layout">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:elevation="12dp"
+        android:id="@+id/crop_box"
+        app:cardCornerRadius="40dp"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="5dp">
+        <ImageView
+            android:layout_height="80dp"
+            android:layout_width="match_parent"
+            android:id="@+id/friend_image"
+            android:src="@drawable/placeholder_profile_icon"
+            android:scaleType="centerCrop"/>
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FROM: SAMPLE TEXT"
+        android:id="@+id/sender_name"
+        app:layout_constraintStart_toEndOf="@+id/crop_box"
+        app:layout_constraintTop_toTopOf="@+id/crop_box"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="30dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2019 JUNE 6TH"
+        android:id="@+id/send_date"
+        app:layout_constraintStart_toEndOf="@+id/crop_box"
+        app:layout_constraintTop_toBottomOf="@+id/sender_name"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="30dp"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+
+</android.support.constraint.ConstraintLayout>

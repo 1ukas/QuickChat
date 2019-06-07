@@ -1,6 +1,7 @@
 package com.miltenil.quickchat.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
@@ -18,7 +19,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.protobuf.Empty;
 import com.miltenil.quickchat.Fragments.MenuFragment;
 import com.miltenil.quickchat.R;
 import com.miltenil.quickchat.Adapters.RecyclerViewAdapter;
@@ -36,8 +36,10 @@ public class FriendsListActivity extends AppCompatActivity {
     private static final String AVATARS_KEY = "avatars";
 
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
     private FirebaseFirestore db;
+
+    private boolean sendMessage;
+    private Uri videoUri;
 
     private ArrayList<String> mFriendNames = new ArrayList<>();
     private ArrayList<String> mFriendImageUrls = new ArrayList<>();
@@ -53,6 +55,9 @@ public class FriendsListActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance(); // Initialise Auth System
 
+        sendMessage = getIntent().getBooleanExtra("sendMessage", false);
+        videoUri = getIntent().getParcelableExtra("videoUri");
+
         // Menu Fragment:
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_menu_placeholder, new MenuFragment());
@@ -60,24 +65,27 @@ public class FriendsListActivity extends AppCompatActivity {
 
         GetFriends();
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        /*RecyclerView recyclerView = findViewById(R.id.recycler_view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(new ArrayList<String>() {}, new ArrayList<String>() {}, this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(FriendsListActivity.this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(FriendsListActivity.this));*/
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) { // If the user is not logged in, open LogInActivity
             Intent intent = new Intent(this, LogInActivity.class);
+            startActivity(intent);
+        }
+        else if (currentUser.getDisplayName().equals("")) {
+            Intent intent = new Intent(this, DisplayNameActivity.class);
             startActivity(intent);
         }
     }
 
     public void GetFriends() {
-        Log.d(TAG, "GetFriends: HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
         db = FirebaseFirestore.getInstance();
         String collectionPath = (USERS_KEY + "/" + mAuth.getUid() + "/" + FRIENDS_KEY);
         final CollectionReference friends = db.collection(collectionPath);
@@ -120,41 +128,17 @@ public class FriendsListActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    private void initImages() {
-        Log.d(TAG, "initImages: preparing images.");
-
-        mFriendImageUrls.add("https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png");
-        mFriendNames.add("This Dude");
-
-        mFriendImageUrls.add("https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png");
-        mFriendNames.add("Wadu Hek");
-
-        mFriendImageUrls.add("https://cdn1.iconfinder.com/data/icons/user-pictures/100/female1-512.png");
-        mFriendNames.add("Hello There");
-
-        mFriendImageUrls.add("https://cdn1.iconfinder.com/data/icons/user-pictures/100/boy-512.png");
-        mFriendNames.add("General Kenobi");
-
-        mFriendImageUrls.add("https://cdn1.iconfinder.com/data/icons/user-pictures/100/supportmale-512.png");
-        mFriendNames.add("Waow");
-
-        mFriendImageUrls.add("https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-512.png");
-        mFriendNames.add("Are You a Boo");
-
-        mFriendImageUrls.add("https://cdn1.iconfinder.com/data/icons/user-pictures/100/girl-512.png");
-        mFriendNames.add("Ted Lopez");
-
-        mFriendImageUrls.add("https://cdn0.iconfinder.com/data/icons/user-pictures/100/unknown_1-2-512.png");
-        mFriendNames.add("Noo u");
-
-        initRecyclerView();
-    }
     
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: init recycler view.");
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, FriendsListActivity.this);
+        RecyclerViewAdapter adapter;
+        if (sendMessage) {
+            adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, mAuth.getUid(), videoUri, FriendsListActivity.this);
+        }
+        else {
+            adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, FriendsListActivity.this);
+        }
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(FriendsListActivity.this));
     }

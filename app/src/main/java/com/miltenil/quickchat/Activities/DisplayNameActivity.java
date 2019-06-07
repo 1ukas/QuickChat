@@ -11,14 +11,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.miltenil.quickchat.Database.UpdateInDatabase;
+import com.miltenil.quickchat.Database.DatabaseController;
 import com.miltenil.quickchat.R;
 
 import java.util.HashMap;
@@ -37,18 +35,22 @@ public class DisplayNameActivity extends AppCompatActivity {
 
     public void UpdateDisplayName (String displayName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DatabaseController databaseController = new DatabaseController(db);
         String uid = currentUser.getUid();
 
         //Update Display Name in Database:
         Map<String, Object> data = new HashMap<>();
         data.put(DISPLAY_NAME_KEY, displayName);
         data.put(DISPLAY_NAME_LOWER_KEY, displayName.toLowerCase());
-        new UpdateInDatabase(db, USERS_KEY, uid, data);
+        databaseController.UpdateInDatabase(USERS_KEY, uid, data);
+        //new UpdateInDatabase(db, USERS_KEY, uid, data);
 
         //Update Display Name in Avatar Database:
         Map<String, Object> data_avatar = new HashMap<>();
         data_avatar.put(DISPLAY_NAME_KEY, displayName);
-        new UpdateInDatabase(db, AVATARS_KEY, uid, data_avatar);
+
+        databaseController.UpdateInDatabase(AVATARS_KEY, uid, data_avatar);
+        //new UpdateInDatabase(db, AVATARS_KEY, uid, data_avatar);
 
         //Update Display Name in Firebase Auth System:
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()

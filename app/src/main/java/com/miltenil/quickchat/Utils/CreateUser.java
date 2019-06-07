@@ -1,7 +1,7 @@
 package com.miltenil.quickchat.Utils;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.miltenil.quickchat.Database.CreateInDatabase;
+import com.miltenil.quickchat.Database.DatabaseController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,7 @@ public class CreateUser {
 
     public void AddNewUser(String uid, String email) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DatabaseController databaseController = new DatabaseController(db);
 
         // Put User Data:
         Map<String, Object> data = new HashMap<>();
@@ -31,12 +32,14 @@ public class CreateUser {
         data.put(UNREAD_MESSAGE_KEY, false);
         data.put(UNREAD_MESSAGES_KEY, 0);
         data.put(AVATAR_KEY, "");
-        new CreateInDatabase(db, USERS_KEY, uid, data, false);
+        //new CreateInDatabase(db, USERS_KEY, uid, data, false);
+        databaseController.CreateInDatabase(USERS_KEY, uid, data, false);
 
         // Put User Avatar Data:
         Map<String, Object> data_avatar = new HashMap<>();
         data_avatar.put(DISPLAY_NAME_KEY, "");
         data_avatar.put(AVATAR_KEY, "");
-        new CreateInDatabase(db, AVATARS_KEY, uid, data_avatar, false);
+        //new CreateInDatabase(db, AVATARS_KEY, uid, data_avatar, false);
+        databaseController.CreateInDatabase(AVATARS_KEY, uid, data_avatar, false);
     }
 }

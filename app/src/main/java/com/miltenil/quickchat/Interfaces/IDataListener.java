@@ -2,6 +2,6 @@ package com.miltenil.quickchat.Interfaces;
 
 import android.net.Uri;
 
-public interface DataListener {
+public interface IDataListener {
     void onGetUriResult(Uri uri);
 }

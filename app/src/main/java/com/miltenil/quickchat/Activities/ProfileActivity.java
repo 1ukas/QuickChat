@@ -29,10 +29,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.miltenil.quickchat.Database.CreateInDatabase;
-import com.miltenil.quickchat.Database.UpdateInDatabase;
+import com.miltenil.quickchat.Database.DatabaseController;
 import com.miltenil.quickchat.Fragments.MenuFragment;
-import com.miltenil.quickchat.Interfaces.DataListener;
+import com.miltenil.quickchat.Interfaces.IDataListener;
 import com.miltenil.quickchat.R;
 import com.miltenil.quickchat.Storage.UploadToStorage;
 import com.miltenil.quickchat.Utils.LoadImageFromURLAsync;
@@ -69,16 +68,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     private String passString;
 
-    DataListener dataListener = new DataListener() {
+    IDataListener IDataListener = new IDataListener() {
         @Override
         public void onGetUriResult(Uri uri) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DatabaseController databaseController = new DatabaseController(db);
             Map<String, Object> data = new HashMap<>();
             data.put(AVATAR_KEY, uri.toString());
             // Update Avatar URI in User Profile Document
-            new UpdateInDatabase(db, USERS_KEY, mAuth.getUid(), data);
+            //new UpdateInDatabase(db, USERS_KEY, mAuth.getUid(), data);
+            databaseController.UpdateInDatabase(USERS_KEY, mAuth.getUid(), data);
             // Update Avatar URI in Avatar Document
-            new UpdateInDatabase(db, AVATARS_COLLECTION_KEY, mAuth.getUid(), data);
+            //new UpdateInDatabase(db, AVATARS_COLLECTION_KEY, mAuth.getUid(), data);
+            databaseController.UpdateInDatabase(AVATARS_COLLECTION_KEY, mAuth.getUid(), data);
+
             // Update Avatar URI in User Firebase Auth
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setPhotoUri(uri)
@@ -95,77 +98,6 @@ public class ProfileActivity extends AppCompatActivity {
                     });
         }
     };
-
-    private void SetProfileData(String displayName, String email) {
-        final TextView displayNameView = findViewById(R.id.profile_displayname);
-        final TextView emailView = findViewById(R.id.profile_email);
-        displayNameView.setText(displayName);
-        emailView.setText(email);
-        if (currentUser.getPhotoUrl() != null) {
-            new LoadImageFromURLAsync().execute(profileAvatar, currentUser.getPhotoUrl().toString());
-        }
-    }
-
-    private void GetProfileData() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference users = db.collection(USERS_KEY);
-        users.document(mAuth.getUid()).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "onComplete: GetProfileData: User Found.");
-                            String displayName = task.getResult().getString(DISPLAYNAME_KEY);
-                            String email = task.getResult().getString(EMAIL_KEY);
-                            SetProfileData(displayName, email);
-                        }
-                        else {
-                            Log.w(TAG, "onComplete: GetProfileData: Error Getting User Document: ", task.getException());
-                        }
-                    }
-                });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //Detects request codes
-        if(requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
-            Uri selectedImage = data.getData();
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                byte[] byteData = baos.toByteArray();
-                byte[] rescaledData = new RescaleImage().decodeResource(byteData, MAX_WIDTH, MAX_HEIGHT);
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                new UploadToStorage(storage).UploadByteArray(mAuth.getUid(), AVATARS_COLLECTION_KEY, rescaledData, dataListener);
-
-                Bitmap rescaledBitmap = BitmapFactory.decodeByteArray(rescaledData, 0, rescaledData.length);
-                profileAvatar.setImageBitmap(rescaledBitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) { // If the user is not logged in, open LogInActivity
-            Intent intent = new Intent(this, LogInActivity.class);
-            startActivity(intent);
-        }
-        else if (currentUser.getDisplayName().equals("")) {
-            Intent intent = new Intent(this, DisplayNameActivity.class);
-            startActivity(intent);
-        }
-    }
 
     View.OnClickListener passwordButtonListener = new View.OnClickListener() {
         @Override
@@ -225,6 +157,77 @@ public class ProfileActivity extends AppCompatActivity {
                     });
         }
     };
+
+    private void SetProfileData(String displayName, String email) {
+        final TextView displayNameView = findViewById(R.id.profile_displayname);
+        final TextView emailView = findViewById(R.id.profile_email);
+        displayNameView.setText(displayName);
+        emailView.setText(email);
+        if (currentUser.getPhotoUrl() != null) {
+            new LoadImageFromURLAsync().execute(profileAvatar, currentUser.getPhotoUrl().toString());
+        }
+    }
+
+    private void GetProfileData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final CollectionReference users = db.collection(USERS_KEY);
+        users.document(mAuth.getUid()).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: GetProfileData: User Found.");
+                            String displayName = task.getResult().getString(DISPLAYNAME_KEY);
+                            String email = task.getResult().getString(EMAIL_KEY);
+                            SetProfileData(displayName, email);
+                        }
+                        else {
+                            Log.w(TAG, "onComplete: GetProfileData: Error Getting User Document: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Detects request codes
+        if(requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] byteData = baos.toByteArray();
+                byte[] rescaledData = new RescaleImage().decodeResource(byteData, MAX_WIDTH, MAX_HEIGHT);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                new UploadToStorage(storage).UploadByteArray(mAuth.getUid(), AVATARS_COLLECTION_KEY, rescaledData, IDataListener);
+
+                Bitmap rescaledBitmap = BitmapFactory.decodeByteArray(rescaledData, 0, rescaledData.length);
+                profileAvatar.setImageBitmap(rescaledBitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) { // If the user is not logged in, open LogInActivity
+            Intent intent = new Intent(this, LogInActivity.class);
+            startActivity(intent);
+        }
+        else if (currentUser.getDisplayName().equals("")) {
+            Intent intent = new Intent(this, DisplayNameActivity.class);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

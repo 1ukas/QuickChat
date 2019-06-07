@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.miltenil.quickchat.Database.CreateInDatabase;
 import com.miltenil.quickchat.R;
 
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class AddFriendActivity extends AppCompatActivity {
         data.put(DISPLAY_NAME_KEY, friendDisplayName);
         data.put(DISPLAY_NAME_LOWER_KEY, friendDisplayNameLower);
         data.put(AVATAR_KEY, friendAvatarUrl);
-        new CreateInDatabase(db, collectionPath, friendUid, data, false);
+        //new CreateInDatabase(db, collectionPath, friendUid, data, false);
     }
 
     public void FindFriend(String friendDetails) {

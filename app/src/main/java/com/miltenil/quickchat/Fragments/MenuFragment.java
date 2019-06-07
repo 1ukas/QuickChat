@@ -24,11 +24,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.miltenil.quickchat.Activities.FriendsListActivity;
 import com.miltenil.quickchat.Activities.LogInActivity;
-import com.miltenil.quickchat.Activities.MainActivity;
 import com.miltenil.quickchat.Activities.ProfileActivity;
+import com.miltenil.quickchat.Interfaces.IDataListener;
 import com.miltenil.quickchat.R;
+import com.miltenil.quickchat.Storage.UploadToStorage;
 import com.miltenil.quickchat.Utils.AddFriend;
 
 import java.io.File;
@@ -46,8 +48,21 @@ public class MenuFragment extends Fragment {
     private static final String DIRECTORY_NAME_KEY = "QuickChat";
     private static final String AUTHORITY_KEY = "com.miltenil.fileprovider";
     private static final String VIDEO_FORMAT_KEY = ".mp4";
+    private static final String VIDEOS_DIR_KEY = "videos";
 
     private FirebaseAuth mAuth;
+
+    IDataListener IDataListener = new IDataListener() {
+        @Override
+        public void onGetUriResult(Uri uri) {
+            //Toast.makeText(getActivity(), "URI: " + uri.toString(), Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(getActivity(), FriendsListActivity.class);
+            intent.putExtra("sendMessage", true);
+            intent.putExtra("videoUri", uri);
+            startActivity(intent);
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,15 +82,22 @@ public class MenuFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == VIDEO_CAPTURE) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(getActivity(), "Video saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-            } else if (resultCode == RESULT_CANCELED) {
+                HandleOnVideoCaptureOK(data);
+            }
+            else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(getActivity(), "Video recording cancelled.", Toast.LENGTH_LONG).show();
-            } else {
+            }
+            else {
                 Toast.makeText(getActivity(), "Failed to record video", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void HandleOnVideoCaptureOK(@Nullable Intent data) {
+        //Toast.makeText(getActivity(), "Video saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        new UploadToStorage(storage).UploadFile(mAuth.getUid(), VIDEOS_DIR_KEY, data.getData(), IDataListener);
     }
 
     @Override

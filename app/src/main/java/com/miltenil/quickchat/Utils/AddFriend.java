@@ -8,7 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.miltenil.quickchat.Database.CreateInDatabase;
+import com.miltenil.quickchat.Database.DatabaseController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +31,14 @@ public class AddFriend {
     }
 
     private void CreateFriend(String friendUid, String friendDisplayName, String friendDisplayNameLower, String friendAvatarUrl, String uid) {
+        DatabaseController databaseController = new DatabaseController(db);
         String collectionPath = (USERS_KEY + "/" + uid + "/" + FRIENDS_KEY);
         Map<String, Object> data = new HashMap<>();
         data.put(DISPLAY_NAME_KEY, friendDisplayName);
         data.put(DISPLAY_NAME_LOWER_KEY, friendDisplayNameLower);
         data.put(AVATAR_KEY, friendAvatarUrl);
-        new CreateInDatabase(db, collectionPath, friendUid, data, false);
+        //new CreateInDatabase(db, collectionPath, friendUid, data, false);
+        databaseController.CreateInDatabase(collectionPath, friendUid, data, false);
     }
 
     public void FindFriend(String friendDetails, final String uid) {

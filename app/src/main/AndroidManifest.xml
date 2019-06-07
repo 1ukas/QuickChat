@@ -38,7 +38,8 @@
         <activity android:name=".Activities.FriendsListActivity" android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.AddFriendActivity" android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.ProfileActivity" android:parentActivityName=".Activities.MainActivity"></activity>
-        <activity android:name=".Activities.VideoCaptureActivity"></activity>
+        <activity android:name=".Activities.VideoPlayActivity" android:parentActivityName=".Activities.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
