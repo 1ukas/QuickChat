@@ -39,7 +39,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2019 JUNE 6TH"
+        android:text="Jan 31, 9999"
         android:id="@+id/send_date"
         app:layout_constraintStart_toEndOf="@+id/crop_box"
         app:layout_constraintTop_toBottomOf="@+id/sender_name"

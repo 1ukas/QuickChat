@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class AddFriend {
 
-    private static final String TAG = "AddFriendActivity";
+    private static final String TAG = "AddFriend";
     private static final String USERS_KEY = "users";
     private static final String DISPLAY_NAME_KEY = "displayname";
     private static final String DISPLAY_NAME_LOWER_KEY = "displaynamelower";
