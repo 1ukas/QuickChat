@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -46,6 +48,11 @@ public class FriendsListActivity extends AppCompatActivity {
 
     private ArrayList<String> friendUids = new ArrayList<>();
 
+    private void HandleEmptyFriendsList() {
+        TextView emptyInboxMessage = findViewById(R.id.empty_friendslist_message);
+        emptyInboxMessage.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +71,6 @@ public class FriendsListActivity extends AppCompatActivity {
         ft.commit();
 
         GetFriends();
-
-        /*RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(new ArrayList<String>() {}, new ArrayList<String>() {}, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(FriendsListActivity.this));*/
     }
 
     @Override
@@ -82,6 +84,31 @@ public class FriendsListActivity extends AppCompatActivity {
         else if (currentUser.getDisplayName().equals("")) {
             Intent intent = new Intent(this, DisplayNameActivity.class);
             startActivity(intent);
+        }
+    }
+
+    private void GetUserAvatars() {
+        CollectionReference avatars = db.collection(AVATARS_KEY);
+        for (int i = 0; i <= friendUids.size() - 1; ++i) {
+            final int index = i;
+            avatars.document(friendUids.get(i)).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "onComplete: GetFriends: Found a User Avatar.");
+
+                                mFriendImageUrls.add(task.getResult().getString(AVATAR_KEY));
+                                mFriendNames.add(task.getResult().getString(DISPLAY_NAME_KEY));
+                            }
+                            else {
+                                Log.d(TAG, "Error Getting Documents: ", task.getException());
+                            }
+                            if (index == friendUids.size() - 1) {
+                                initRecyclerView();
+                            }
+                        }
+                    });
         }
     }
 
@@ -102,28 +129,11 @@ public class FriendsListActivity extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "Error Getting Documents: ", task.getException());
                         }
-
-                        CollectionReference avatars = db.collection(AVATARS_KEY);
-                        for (int i = 0; i <= friendUids.size() - 1; ++i) {
-                            final int index = i;
-                            avatars.document(friendUids.get(i)).get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                Log.d(TAG, "onComplete: GetFriends: Found a User Avatar.");
-
-                                                mFriendImageUrls.add(task.getResult().getString(AVATAR_KEY));
-                                                mFriendNames.add(task.getResult().getString(DISPLAY_NAME_KEY));
-                                            }
-                                            else {
-                                                Log.d(TAG, "Error Getting Documents: ", task.getException());
-                                            }
-                                            if (index == friendUids.size() - 1) {
-                                                initRecyclerView();
-                                            }
-                                        }
-                                    });
+                        if (friendUids.size() >= 1 && !friendUids.get(0).isEmpty()) {
+                            GetUserAvatars();
+                        }
+                        else {
+                            HandleEmptyFriendsList();
                         }
                     }
                 });
