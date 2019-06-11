@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -18,8 +19,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,12 +59,32 @@ public class MenuFragment extends Fragment {
     IDataListener IDataListener = new IDataListener() {
         @Override
         public void onGetUriResult(Uri uri) {
-            //Toast.makeText(getActivity(), "URI: " + uri.toString(), Toast.LENGTH_LONG).show();
+            ProgressBar progressBar = getActivity().findViewById(R.id.main_progress_bar);
+            LinearLayout colorLayout = getActivity().findViewById(R.id.color_layout);
+            if (progressBar.getVisibility() != View.GONE) {
+                progressBar.setVisibility(View.GONE);
+                colorLayout.setVisibility(View.GONE);
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
 
+            //Toast.makeText(getActivity(), "URI: " + uri.toString(), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getActivity(), FriendsListActivity.class);
             intent.putExtra("sendMessage", true);
             intent.putExtra("videoUri", uri);
             startActivity(intent);
+        }
+
+        @Override
+        public void onProgressUpdate(int progress) {
+            ProgressBar progressBar = getActivity().findViewById(R.id.main_progress_bar);
+            LinearLayout colorLayout = getActivity().findViewById(R.id.color_layout);
+            if (progressBar.getVisibility() != View.VISIBLE) {
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                colorLayout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+            }
+            progressBar.setProgress(progress);
         }
     };
 
@@ -94,8 +118,6 @@ public class MenuFragment extends Fragment {
     }
 
     private void HandleOnVideoCaptureOK(@Nullable Intent data) {
-        //Toast.makeText(getActivity(), "Video saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
         new UploadToStorage(storage).UploadFile(mAuth.getUid(), VIDEOS_DIR_KEY, data.getData(), IDataListener);
     }

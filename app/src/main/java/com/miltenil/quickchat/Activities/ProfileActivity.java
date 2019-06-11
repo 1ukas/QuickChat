@@ -97,6 +97,11 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
         }
+
+        @Override
+        public void onProgressUpdate(int progress) {
+
+        }
     };
 
     View.OnClickListener passwordButtonListener = new View.OnClickListener() {
