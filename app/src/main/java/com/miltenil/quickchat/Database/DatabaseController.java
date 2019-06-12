@@ -10,11 +10,17 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.Map;
 
-public class CreateInDatabase {
+public class DatabaseController {
 
-    private static final String TAG = "CreateInDatabase";
+    private static final String TAG = "DatabaseController";
 
-    public CreateInDatabase(@NonNull FirebaseFirestore db, String collectionPath, String documentName, Map<String, Object> data, boolean merge) {
+    private FirebaseFirestore db;
+
+    public DatabaseController(@NonNull FirebaseFirestore db) {
+        this.db = db;
+    }
+
+    public void CreateInDatabase(String collectionPath, String documentName, Map<String, Object> data, boolean merge) {
         if (merge) {
             db.collection(collectionPath).document(documentName)
                     .set(data, SetOptions.merge())
@@ -47,5 +53,22 @@ public class CreateInDatabase {
                         }
                     });
         }
+    }
+
+    public void UpdateInDatabase(String collectionPath, String documentName, Map<String, Object> data) {
+        db.collection(collectionPath).document(documentName)
+                .update(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Data Updated in Database");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error Updating Document", e);
+                    }
+                });
     }
 }

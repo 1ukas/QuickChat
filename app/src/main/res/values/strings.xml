@@ -9,4 +9,10 @@
     <string name="next">Next</string>
     <string name="set_your_display_name">Set Your\nDisplay Name</string>
     <string name="display_name">Display Name</string>
+    <string name="change_password">Change Password</string>
+    <string name="reauth_message">Re-authenticate to change password</string>
+    <string name="pass_changed">Password Has Been Changed</string>
+    <string name="reauth_profile_prompt">Re-auth and change password</string>
+    <string name="inbox_date_placeholder">Jan 31, 9999</string>
+    <string name="inbox_user_placeholder">FROM: SAMPLE USER</string>
 </resources>

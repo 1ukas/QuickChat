@@ -9,7 +9,8 @@
     <FrameLayout
         android:id="@+id/fragment_menu_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -17,8 +18,36 @@
         android:layout_height="wrap_content"
         android:id="@+id/recycler_view"
         app:layout_constraintTop_toBottomOf="@id/fragment_menu_placeholder">
-
     </android.support.v7.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/empty_friendslist_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Friends List is Empty :("
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_menu_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/main_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/color_layout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/progressGreyOut"/>
 
 </android.support.constraint.ConstraintLayout>
