@@ -129,6 +129,11 @@ public class ProfileActivity extends AppCompatActivity {
             final String emailInput = emailField.getText().toString();
             final String passwordInput = passwordField.getText().toString();
 
+            if (emailInput.isEmpty() || passwordInput.isEmpty()) {
+                Toast.makeText(ProfileActivity.this, "Invalid Details", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             AuthCredential credential = EmailAuthProvider
                     .getCredential(emailInput, passwordInput);
 
