@@ -32,13 +32,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.LogInActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar"></activity>
         <activity android:name=".Activities.DisplayNameActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar"></activity>
         <activity android:name=".Activities.FriendsListActivity" android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.ProfileActivity" android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.VideoPlayActivity" android:parentActivityName=".Activities.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar"></activity>
     </application>
 
 </manifest>

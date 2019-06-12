@@ -13,4 +13,6 @@
     <string name="reauth_message">Re-authenticate to change password</string>
     <string name="pass_changed">Password Has Been Changed</string>
     <string name="reauth_profile_prompt">Re-auth and change password</string>
+    <string name="inbox_date_placeholder">Jan 31, 9999</string>
+    <string name="inbox_user_placeholder">FROM: SAMPLE USER</string>
 </resources>
