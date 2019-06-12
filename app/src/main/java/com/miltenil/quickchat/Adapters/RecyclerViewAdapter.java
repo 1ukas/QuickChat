@@ -58,7 +58,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String READ_KEY = "read";
     private static final String DISPLAY_NAME_LOWER_KEY = "displaynamelower";
     private static final String DATE_KEY = "date";
-    public static final String FRIENDS_KEY = "friends";
+    private static final String FRIENDS_KEY = "friends";
 
     private ArrayList<String> mFriendImages = new ArrayList<>();
     private ArrayList<String> mFriendNames = new ArrayList<>();
@@ -129,10 +129,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             if (!mFriendImages.get(i).isEmpty()) { // If there is an avatar saved, use it.
                 new LoadImageFromURLAsync().execute(viewHolder.friendImage, mFriendImages.get(i));
             }
-            if (!mReadMessages.get(i)) { // If message is unread set the text to bold.
+            if (!mReadMessages.get(i)) { // If message is unread set the text to bold and change color.
                 viewHolder.friendName.setTypeface(viewHolder.friendName.getTypeface(), Typeface.BOLD);
+                viewHolder.friendName.setTextColor(mContext.getResources().getColor(R.color.white));
             }
-            String senderText = ("FROM: " + mFriendNames.get(i));
+            String senderText = ("@" + mFriendNames.get(i));
             viewHolder.friendName.setText(senderText);
             viewHolder.sendDate.setText(mMessageDates.get(i));
             viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {

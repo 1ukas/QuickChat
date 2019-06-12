@@ -6,4 +6,5 @@
     <color name="progressGreyOut">#B0000000</color>
     <color name="white">#ffffff</color>
     <color name="borderColor">#38444d</color>
+    <color name="subTextColor">#8899a6</color>
 </resources>

@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="@+id/crop_box"
         android:layout_marginTop="10dp"
         android:layout_marginStart="30dp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/subTextColor"
         android:textSize="18sp" />
 
     <TextView
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sender_name"
         android:layout_marginTop="10dp"
         android:layout_marginStart="30dp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/subTextColor"
         android:textSize="14sp"/>
 
 </android.support.constraint.ConstraintLayout>
