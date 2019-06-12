@@ -1,5 +1,6 @@
 package com.miltenil.quickchat.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,7 +21,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,6 +58,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String READ_KEY = "read";
     private static final String DISPLAY_NAME_LOWER_KEY = "displaynamelower";
     private static final String DATE_KEY = "date";
+    public static final String FRIENDS_KEY = "friends";
 
     private ArrayList<String> mFriendImages = new ArrayList<>();
     private ArrayList<String> mFriendNames = new ArrayList<>();
@@ -70,9 +76,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //FriendsListActivity:
     public RecyclerViewAdapter(ArrayList<String> mFriendImages, ArrayList<String> mFriendNames,
-                               Context mContext) {
+                               ArrayList<String> mDocumentIDs, Context mContext) {
         this.mFriendImages = mFriendImages;
         this.mFriendNames = mFriendNames;
+        this.mDocumentIDs = mDocumentIDs;
         this.mContext = mContext;
     }
 
@@ -151,12 +158,44 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         HandleCreateMessageOnClick(mFriendNames.get(i));
                     }
                     else {
-                        Toast.makeText(mContext, mFriendNames.get(i), Toast.LENGTH_SHORT).show();
+                        viewHolder.removeFriend.setVisibility(View.VISIBLE);
                         v.setEnabled(true);
+                        viewHolder.removeFriend.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                v.setEnabled(false);
+                                RemoveFriend(mDocumentIDs.get(i));
+                                v.setVisibility(View.GONE);
+                            }
+                        });
+                        //Toast.makeText(mContext, mFriendNames.get(i), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
+    }
+
+    private void RemoveFriend(String friendUID) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String collectionPath = (USERS_COLLECTION_KEY + "/" + mAuth.getUid() + "/" + FRIENDS_KEY);
+        db.collection(collectionPath).document(friendUID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                        ((Activity)mContext).recreate();
+                        Toast.makeText(mContext, "Friend Removed", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                        Toast.makeText(mContext, "Something Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void HandleInboxOnClick(String videoUri, String documentID, Boolean read) {
@@ -220,6 +259,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ImageView friendImage;
         TextView friendName;
         TextView sendDate;
+        Button removeFriend;
         ConstraintLayout parentLayout;
 
         public ViewHolder(@NonNull View itemView, ViewHolderType viewType) {
@@ -229,6 +269,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     friendImage = itemView.findViewById(R.id.friend_image);
                     friendName = itemView.findViewById(R.id.friend_name);
                     parentLayout = itemView.findViewById(R.id.parent_layout);
+                    removeFriend = itemView.findViewById(R.id.remove_friend_btn);
                     break;
                 case TYPE_INBOX:
                     friendImage = itemView.findViewById(R.id.friend_image);

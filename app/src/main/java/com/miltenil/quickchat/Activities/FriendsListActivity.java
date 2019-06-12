@@ -147,7 +147,7 @@ public class FriendsListActivity extends AppCompatActivity {
             adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, mAuth.getUid(), videoUri, FriendsListActivity.this);
         }
         else {
-            adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, FriendsListActivity.this);
+            adapter = new RecyclerViewAdapter(mFriendImageUrls, mFriendNames, friendUids, FriendsListActivity.this);
         }
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(FriendsListActivity.this));
