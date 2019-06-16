@@ -1,6 +1,5 @@
 package com.miltenil.quickchat.Utils;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
@@ -12,11 +11,9 @@ public class RescaleImage {
         ByteArrayOutputStream baos = null;
 
         try {
-            // Part 1: Decode image
             Bitmap unscaledBitmap = ScalingUtilities.decodeByteArray(imageByteArray, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
 
             if (!(unscaledBitmap.getWidth() <= DESIREDWIDTH && unscaledBitmap.getHeight() <= DESIREDHEIGHT)) {
-                // Part 2: Scale image
                 scaledBitmap = ScalingUtilities.createScaledBitmap(unscaledBitmap, DESIREDWIDTH, DESIREDHEIGHT, ScalingUtilities.ScalingLogic.FIT);
             }
             else {
